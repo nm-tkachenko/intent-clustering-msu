@@ -38,7 +38,7 @@ Clustering quality was evaluated with 17 different metrics. Exact list as well a
 Intent for each discovered cluster (cluster name) was generated with the **RAKE** algorithm. Keyword phrases with the highest scores were attributed to the corresponding cluster elements.
 
 ## Results
-The two best pipeline as follows:
+The two best pipelines for CLINC150 as follows:
 | Model | Method | Hyperparameters | Number of clusters | Noise clusters | Homogeneity | Completeness | V-measure | 
 |---------|--------|--------|--------|--------|--------|--------|--------|
 | BGE | BIRCH | `threshold=0,55`, `branching_factor=30` | 1516 | 2077 | 0.94 | 0.68 | 0.79 |
