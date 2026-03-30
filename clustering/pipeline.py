@@ -124,18 +124,18 @@ def keywords(labels, data):
       text["rake_results"] = keywords
     return sorted(corpus, key=lambda elem: -elem['support'])
 
-def apply_DBSCAN(embeddings, gold, eps, min_samples):
+def apply_DBSCAN(embeddings, eps, min_samples):
   clustering = DBSCAN(eps=eps, min_samples=min_samples).fit(embeddings)
   return clustering.labels_
 
-def apply_BIRCH(embeddings, gold, threshold, branching_factor):
+def apply_BIRCH(embeddings, threshold, branching_factor):
   brc = Birch(threshold=threshold, branching_factor=branching_factor, n_clusters=None)
   brc.fit(embeddings)
   clustering = brc.predict(embeddings)
   return clustering
 
-def execute(data, model_func=apply_frida, prefix="paraphrase: ", clustering_method=apply_DBSCAN, 
-            eps=0.5, min_samples=1, threshold=0.6, branching_factor=30):
+def execute(data, model_func=apply_bge, prefix="", clustering_method='BIRCH', 
+            threshold=0.55, branching_factor=30, eps=0.5, min_samples=1):
     labels_true=[elem[2] for elem in data]
     labels_codes = {l: x for x, l in enumerate(set(labels_true))}
     labels_codes['oos'] = -1
@@ -153,12 +153,14 @@ def execute(data, model_func=apply_frida, prefix="paraphrase: ", clustering_meth
         label = data[i][2] if data[i][2]!='oos' else 'oos'+str(i)
         gold_B2[label] = gold_B2.get(label, set())
         gold_B2[label].add(i)
-    embeddings = model_func(train_data)
+    embeddings = model_func(data, prefix=prefix)
     dists = euclidean_distances(embeddings, embeddings)
-    try:
-        pred_labels = clustering_method(embeddings, data, eps=eps, min_samples=min_samples)
-    except TypeError:
-        pred_labels = clustering_method(embeddings, data, threshold=threshold, branching_factor=branching_factor)
+    if clustering_method=='BIRCH':
+        pred_labels = apply_BIRCH(embeddings, threshold=threshold, branching_factor=branching_factor)
+    elif clustering_method=='DBSCAN':
+        pred_labels = apply_DBSCAN(embeddings, eps=eps, min_samples=min_samples)
+    else:
+        print('unsupported clustering method')
     metrics_ = compute_metrics(pred_labels=pred_labels, gold_labels=gold_labels, dists=dists, data=data, gold_ARPF=gold_ARPF, gold_B2=gold_B2)
     return {'pred_labels': pred_labels.tolist(), 'clusters and keywords': keywords(pred_labels, data), 'metrics': metrics_}
             
@@ -171,7 +173,7 @@ for split in ('train', 'val', 'oos_test'):
   start = len(train_data)
   train_data.extend([(start+id_, elem['translation'], elem['label']) for id_, elem in enumerate(data[split])])
 
-rez = execute(train_data)
-print(rez['metrics'])
-with open('rezult.json', "w", encoding="utf-8") as f:
-    json.dump(rez, f, ensure_ascii=False)
+rezult = execute(train_data)
+print(rezult['metrics'])
+with open('rezult_.json', "w", encoding="utf-8") as f:
+    json.dump(rezult, f, ensure_ascii=False)
