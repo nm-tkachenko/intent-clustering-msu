@@ -42,7 +42,7 @@ The two best pipelines for CLINC150 as follows:
 | Model | Method | Hyperparameters | Number of clusters | Noise clusters | Homogeneity | Completeness | V-measure | 
 |---------|--------|--------|--------|--------|--------|--------|--------|
 | BGE | BIRCH | `threshold=0,55`, `branching_factor=30` | 1516 | 2077 | 0.94 | 0.68 | 0.79 |
-| FRIDA | DBSCAN | `eps=0,5`, `min_samples=1` | 5281 | 4574 | 0.79 | 0.67 | 0.73 |
+| FRIDA | DBSCAN | `eps=0,5`, `min_samples=1` | 707 | 4574 | 0.79 | 0.67 | 0.73 |
 
 | Model | Method | Hyperparameters | Adjusted Rand Index | Adjusted Mutual Information | Silhouette Coefficient | Accuracy | P | R | F1 |
 |---------|--------|--------|--------|--------|--------|--------|--------|--------|--------|
@@ -56,4 +56,5 @@ The two best pipelines for CLINC150 as follows:
 
 ---
 This project was created for the academic course "Project tasks in Computer Linguistics" (MSU, 2026).
+
 Authors: Lapanitsyna Anna, Tkachenko Natalia, Bolotova Maria
