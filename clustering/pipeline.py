@@ -97,6 +97,7 @@ def compute_metrics(pred_labels, gold_labels, dists, data, gold_ARPF=None, gold_
   for label in set(pred_labels):
     if list(pred_labels).count(label)==1: # для BIRCH
       n_noise_ += 1
+      n_clusters_ -= 1
   try:
     SC = metrics.silhouette_score(dists, pred_labels)
   except ValueError:
@@ -134,7 +135,7 @@ def apply_BIRCH(embeddings, threshold, branching_factor):
   clustering = brc.predict(embeddings)
   return clustering
 
-def execute(data, model_func=apply_bge, prefix="", clustering_method='BIRCH', 
+def execute(data, model_func=apply_bge, clustering_method='BIRCH', 
             threshold=0.55, branching_factor=30, eps=0.5, min_samples=1):
     labels_true=[elem[2] for elem in data]
     labels_codes = {l: x for x, l in enumerate(set(labels_true))}
@@ -153,7 +154,7 @@ def execute(data, model_func=apply_bge, prefix="", clustering_method='BIRCH',
         label = data[i][2] if data[i][2]!='oos' else 'oos'+str(i)
         gold_B2[label] = gold_B2.get(label, set())
         gold_B2[label].add(i)
-    embeddings = model_func(data, prefix=prefix)
+    embeddings = model_func(data)
     dists = euclidean_distances(embeddings, embeddings)
     if clustering_method=='BIRCH':
         pred_labels = apply_BIRCH(embeddings, threshold=threshold, branching_factor=branching_factor)
@@ -174,6 +175,7 @@ for split in ('train', 'val', 'oos_test'):
   train_data.extend([(start+id_, elem['translation'], elem['label']) for id_, elem in enumerate(data[split])])
 
 rezult = execute(train_data)
+# rezult = execute(train_data, model_func=apply_frida, clustering_method='DBSCAN')
 print(rezult['metrics'])
 with open('rezult_.json', "w", encoding="utf-8") as f:
     json.dump(rezult, f, ensure_ascii=False)
