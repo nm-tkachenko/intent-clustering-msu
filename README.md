@@ -41,7 +41,7 @@ Intent for each discovered cluster (cluster name) was generated with the **RAKE*
 The two best pipeline as follows:
 | Model | Method | Hyperparameters | Number of clusters | Noise clusters | Homogeneity | Completeness | V-measure | 
 |---------|--------|--------|--------|--------|--------|--------|--------|
-| BGE | BIRCH | `threshold=0,55`, `branching_factor=30` | 3593 | 2077 | 0.94 | 0.68 | 0.79 |
+| BGE | BIRCH | `threshold=0,55`, `branching_factor=30` | 1516 | 2077 | 0.94 | 0.68 | 0.79 |
 | FRIDA | DBSCAN | `eps=0,5`, `min_samples=1` | 5281 | 4574 | 0.79 | 0.67 | 0.73 |
 
 | Model | Method | Hyperparameters | Adjusted Rand Index | Adjusted Mutual Information | Silhouette Coefficient | Accuracy | P | R | F1 |
