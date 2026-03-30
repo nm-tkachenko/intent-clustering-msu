@@ -95,7 +95,7 @@ with open('/content/banking_qwen.json', 'r', encoding="utf-8") as f:
 with open('all_scores_b_qwen.csv', 'w', newline='', encoding='utf-8') as f_csv:
     writer = csv.writer(f_csv)
     writer.writerow(['split', 'source', 'translation', 'score'])
-    splits = ['train', 'val', 'test', 'oos_train', 'oos_val', 'oos_test']
+    splits = ['train', 'test', 'oos_train', 'oos_test']
 
     for split in splits:
         if split not in data:

@@ -126,10 +126,10 @@ def apply_BIRCH(embeddings, gold, threshold, branching_factor):
 with open('clinc_qwen2.json', 'r', encoding="utf-8") as f:
   data = json.load(f)
 
-# train_data = []
-# for split in ('train', 'val', 'oos_test'):
-#   start = len(train_data)
-#   train_data.extend([(start+id_, elem['translation'], elem['label']) for id_, elem in enumerate(data[split])])
+train_data = []
+for split in ('train', 'val', 'oos_test'):
+  start = len(train_data)
+  train_data.extend([(start+id_, elem['translation'], elem['label']) for id_, elem in enumerate(data[split])])
 
 test_data = []
 for split in ('oos_train', 'oos_val', 'test'):
