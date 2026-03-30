@@ -115,8 +115,9 @@ def compute_metrics(pred_labels, gold_labels, dists, data, gold_ARPF=None, gold_
 def keywords(labels, data):
     pred = {}
     for i, label in tqdm(enumerate(labels)):
-        pred[label] = pred.get(label, [])
-        pred[label].append(data[i][1])
+        if label!=-1:
+          pred[label] = pred.get(label, [])
+          pred[label].append(data[i][1])
     corpus = [{'support': len(pred[label]), 'text': '\n'.join(pred[label])} for label in pred]
     r = Rake(min_length=2, max_length=6)
     for text in corpus:
@@ -163,7 +164,7 @@ def execute(data, model_func=apply_bge, clustering_method='BIRCH',
     else:
         print('unsupported clustering method')
     metrics_ = compute_metrics(pred_labels=pred_labels, gold_labels=gold_labels, dists=dists, data=data, gold_ARPF=gold_ARPF, gold_B2=gold_B2)
-    return {'pred_labels': pred_labels.tolist(), 'clusters and keywords': keywords(pred_labels, data), 'metrics': metrics_}
+    return {'metrics': metrics_, 'clusters and keywords': keywords(pred_labels, data), 'pred_labels': pred_labels.tolist()}
             
 with open('clinc_qwen2.json', 'r', encoding="utf-8") as f:
   data = json.load(f)
