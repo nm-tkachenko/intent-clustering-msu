@@ -4,8 +4,9 @@ from functions.metrics import *
 from functions.algorithms import *
 
 '''
-This code runs special combinations of clustering algorithms, their parameters and embeddings used,
-iterating finely over the parameters around the values that showed the best results previously, evaluates the results and saves the statistics. 
+This code runs special combinations of clustering algorithms, their parameters and embeddings used on the training sets of both datasets,
+iterating finely over the parameters around the values that showed the best results previously, 
+evaluates the results and saves the statistics (RAKE results included without re-sorting). 
 '''
 
 for ds in ('clinc', 'banking'):
@@ -50,7 +51,7 @@ for ds in ('clinc', 'banking'):
         for min_samples in range(1, 4):
             pred_labels = apply_DBSCAN(embeddings, eps=eps, min_samples=min_samples)
             metrics_ = compute_metrics(pred_labels=pred_labels, gold_labels=gold_labels, dists=dists, data=train_data, gold_ARPF=gold_ARPF, gold_B2=gold_B2)
-            result = {'model': m, 'alg': 'DBSCAN', 'hyperparams': f'eps={eps}, min_samples={min_samples}'} | metrics_ | {'keywords': keywords(pred_labels, test_data)}
+            result = {'model': m, 'alg': 'DBSCAN', 'hyperparams': f'eps={eps}, min_samples={min_samples}'} | metrics_ | {'keywords': keywords(pred_labels, train_data)}
             stats.append(result)
         #     break
         # break
@@ -69,7 +70,7 @@ for ds in ('clinc', 'banking'):
             pred_labels = apply_BIRCH(embeddings, threshold=threshold, branching_factor=branching_factor)
             metrics_ = compute_metrics(pred_labels=pred_labels, gold_labels=gold_labels, dists=dists, data=train_data, gold_ARPF=gold_ARPF, gold_B2=gold_B2)
             result = {'model': m, 'alg': 'BIRCH', 
-                              'hyperparams': f'threshold={threshold}, branching_factor={branching_factor}'} | metrics_ | {'keywords': keywords(pred_labels, test_data)}
+                              'hyperparams': f'threshold={threshold}, branching_factor={branching_factor}'} | metrics_ | {'keywords': keywords(pred_labels, train_data)}
             stats.append(result)
         #     break
         # break
