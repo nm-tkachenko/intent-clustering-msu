@@ -4,6 +4,7 @@ from functions.metrics import *
 from functions.algorithms import *
 
 '''
+Trying some missed out parameters that seem promising
 '''
 
 for ds in ('clinc', 'banking'):
