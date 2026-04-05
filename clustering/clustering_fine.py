@@ -41,38 +41,58 @@ for ds in ('clinc', 'banking'):
 
     stats = []
     
-    # DBSCAN + FRIDA
-    m = 'FRIDA'
-    with open(f'embeddings/{ds}_{m}.json', 'r', encoding="utf-8") as f:
-        embeddings = json.load(f)
-    dists = euclidean_distances(embeddings, embeddings)
-    for eps_int in range(30, 70, 5):
-        eps = eps_int/100
-        for min_samples in range(1, 4):
-            pred_labels = apply_DBSCAN(embeddings, eps=eps, min_samples=min_samples)
-            metrics_ = compute_metrics(pred_labels=pred_labels, gold_labels=gold_labels, dists=dists, data=train_data, gold_ARPF=gold_ARPF, gold_B2=gold_B2)
-            result = {'model': m, 'alg': 'DBSCAN', 'hyperparams': f'eps={eps}, min_samples={min_samples}'} | metrics_ | {'keywords': keywords(pred_labels, train_data)}
-            stats.append(result)
-        #     break
-        # break
-    with open(f'clustering_fine_{ds}.json', "w", encoding="utf-8") as f:
-        json.dump(stats, f, ensure_ascii=False)
-
-    # BIRCH + BGE
-    m = 'BGE'
-    with open(f'embeddings/{ds}_{m}.json', 'r', encoding="utf-8") as f:
+    if ds=='clinc':
+      # DBSCAN + FRIDA
+      m = 'FRIDA'
+      with open(f'embeddings/{ds}_{m}.json', 'r', encoding="utf-8") as f:
           embeddings = json.load(f)
-    dists = euclidean_distances(embeddings, embeddings)
+      dists = euclidean_distances(embeddings, embeddings)
+      for eps_int in range(30, 70, 5):
+          eps = eps_int/100
+          for min_samples in range(1, 4):
+              pred_labels = apply_DBSCAN(embeddings, eps=eps, min_samples=min_samples)
+              metrics_ = compute_metrics(pred_labels=pred_labels, gold_labels=gold_labels, dists=dists, data=train_data, gold_ARPF=gold_ARPF, gold_B2=gold_B2)
+              result = {'model': m, 'alg': 'DBSCAN', 'hyperparams': f'eps={eps}, min_samples={min_samples}'} | metrics_ | {'keywords': keywords(pred_labels, train_data)}
+              stats.append(result)
+          #     break
+          # break
+      with open(f'clustering_fine_{ds}.json', "w", encoding="utf-8") as f:
+          json.dump(stats, f, ensure_ascii=False)
 
-    for threshold_int in range(50, 75, 5):
-        threshold = threshold_int/100
-        for branching_factor in range(20, 70, 10):
-            pred_labels = apply_BIRCH(embeddings, threshold=threshold, branching_factor=branching_factor)
-            metrics_ = compute_metrics(pred_labels=pred_labels, gold_labels=gold_labels, dists=dists, data=train_data, gold_ARPF=gold_ARPF, gold_B2=gold_B2)
-            result = {'model': m, 'alg': 'BIRCH', 
-                              'hyperparams': f'threshold={threshold}, branching_factor={branching_factor}'} | metrics_ | {'keywords': keywords(pred_labels, train_data)}
-            stats.append(result)
-        #     break
-        # break
+      # BIRCH + BGE
+      m = 'BGE'
+      with open(f'embeddings/{ds}_{m}.json', 'r', encoding="utf-8") as f:
+            embeddings = json.load(f)
+      dists = euclidean_distances(embeddings, embeddings)
+
+      for threshold_int in range(50, 75, 5):
+          threshold = threshold_int/100
+          for branching_factor in range(20, 70, 10):
+              pred_labels = apply_BIRCH(embeddings, threshold=threshold, branching_factor=branching_factor)
+              metrics_ = compute_metrics(pred_labels=pred_labels, gold_labels=gold_labels, dists=dists, data=train_data, gold_ARPF=gold_ARPF, gold_B2=gold_B2)
+              result = {'model': m, 'alg': 'BIRCH', 
+                                'hyperparams': f'threshold={threshold}, branching_factor={branching_factor}'} | metrics_ | {'keywords': keywords(pred_labels, train_data)}
+              stats.append(result)
+          #     break
+          # break
+
+    elif ds=='banking':
+       # BIRCH + BGE, FRIDA, LaBSE
+        for m in ('BGE', 'FRIDA', 'LaBSE'):
+            with open(f'embeddings/{ds}_{m}.json', 'r', encoding="utf-8") as f:
+                  embeddings = json.load(f)
+            dists = euclidean_distances(embeddings, embeddings)
+
+            for threshold_int in range(50, 75, 5):
+                threshold = threshold_int/100
+                for branching_factor in range(10, 70, 10):
+                    pred_labels = apply_BIRCH(embeddings, threshold=threshold, branching_factor=branching_factor)
+                    metrics_ = compute_metrics(pred_labels=pred_labels, gold_labels=gold_labels, dists=dists, data=train_data, gold_ARPF=gold_ARPF, gold_B2=gold_B2)
+                    result = {'model': m, 'alg': 'BIRCH', 
+                                      'hyperparams': f'threshold={threshold}, branching_factor={branching_factor}'} | metrics_ | {'keywords': keywords(pred_labels, train_data)}
+                    stats.append(result)
+                #     break
+                # break
+    
     with open(f'clustering_fine_{ds}.json', "w", encoding="utf-8") as f:
         json.dump(stats, f, ensure_ascii=False)

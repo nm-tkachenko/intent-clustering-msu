@@ -5,7 +5,7 @@ from functions.algorithms import *
 
 '''
 This code runs all the clustering algorithms on the training sets of both datasets encoded by all the models, 
-evaluates the results and saves the statistics. 
+roughly iterating over the parameters, evaluates the results and saves the statistics (RAKE results excluded). 
 '''
 
 for ds in ('clinc', 'banking'):
