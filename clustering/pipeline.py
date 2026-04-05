@@ -11,7 +11,7 @@ This is also an example of using the entire repository.
 '''
 
 def execute(data, model_func=apply_bge, clustering_method='BIRCH', 
-            threshold=0.55, branching_factor=30, eps=0.5, min_samples=1):
+            threshold=0.5, branching_factor=30, eps=0.5, min_samples=1):
     labels_true=[elem[2] for elem in data]
     labels_codes = {l: x for x, l in enumerate(set(labels_true))}
     labels_codes['oos'] = -1
@@ -58,10 +58,17 @@ for ds in ('clinc', 'banking'):
     for split in test_splits:
        start = len(test_data)# + len(train_data)
        test_data.extend([(start+id, elem['translation'], elem['label']) for id, elem in enumerate(data[split])])
-
-    rezult = execute(test_data)
-    # rezult = execute(test_data, model_func=apply_frida, clustering_method='DBSCAN')
-    print(rezult['metrics'])
-    with open(f'result_bge+birch_{ds}.json', "w", encoding="utf-8") as f:
-    # with open(f'result_frida+dbscan_{ds}.json', "w", encoding="utf-8") as f:
-        json.dump(rezult, f, ensure_ascii=False)
+    
+    if ds=='clinc':
+        result = execute(test_data, model_func=apply_bge, clustering_method='BIRCH', threshold=0.55, branching_factor=30)
+        # result = execute(test_data, model_func=apply_frida, clustering_method='DBSCAN', eps=0.5, min_samples=1)
+        with open(f'result_bge+birch_{ds}.json', "w", encoding="utf-8") as f:
+      # with open(f'result_frida+dbscan_{ds}.json', "w", encoding="utf-8") as f:
+          json.dump(result, f, ensure_ascii=False)
+    elif ds=='banking':
+        # result = execute(test_data, model_func=apply_bge, clustering_method='BIRCH', threshold=0.5, branching_factor=40)
+        result = execute(test_data, model_func=apply_frida, clustering_method='BIRCH', threshold=0.5, branching_factor=40)
+        # with open(f'result_bge+birch_{ds}.json', "w", encoding="utf-8") as f:
+        with open(f'result_frida+birch_{ds}.json', "w", encoding="utf-8") as f:
+          json.dump(result, f, ensure_ascii=False)     
+    print(result['metrics'])
