@@ -1,3 +1,7 @@
+'''
+This code merges translations of the two models into the final versions of datasets based on wmt20-comet-qe-da scores.
+'''
+
 from comet import download_model, load_from_checkpoint
 
 model_path = download_model("Unbabel/wmt20-comet-qe-da")

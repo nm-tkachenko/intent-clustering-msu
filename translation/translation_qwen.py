@@ -1,3 +1,7 @@
+'''
+This code uses RuadaptQwen3-8B-Hybrid to re-translate the items that were translated by OmniLing-V1-8b with a wmt20-comet-qe-da score lower than 0.2.
+'''
+
 from tqdm import tqdm
 import json
 

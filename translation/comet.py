@@ -1,3 +1,7 @@
+'''
+This code uses wmt20-comet-qe-da to evaluate OmniLing-V1-8b translations.
+'''
+
 from comet import download_model, load_from_checkpoint
 
 model_path = download_model("Unbabel/wmt20-comet-qe-da")
@@ -12,6 +16,7 @@ splits = ['train', 'val', 'test', 'oos_train', 'oos_val', 'oos_test']
 results = {}
 
 with open('all_scores.csv', 'w', newline='', encoding='utf-8') as f_csv:
+# with open('all_scores_b.csv', 'w', newline='', encoding='utf-8') as f_csv:
     writer = csv.writer(f_csv)
     writer.writerow(['split', 'source', 'translation', 'score'])
 
@@ -43,7 +48,9 @@ with open('all_scores.csv', 'w', newline='', encoding='utf-8') as f_csv:
             writer.writerow([split, item['src'], item['mt'], f"{score:.4f}"])
 
 csv_file = 'all_scores.csv'
+# csv_file = 'all_scores_b.csv'
 json_file = 'all_scores.json'
+# json_file = 'all_scores_b.json'
 
 data = []
 with open(csv_file, 'r', encoding='utf-8') as f:
