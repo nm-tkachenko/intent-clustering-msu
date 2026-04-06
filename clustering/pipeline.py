@@ -66,9 +66,9 @@ for ds in ('clinc', 'banking'):
       # with open(f'result_frida+dbscan_{ds}.json', "w", encoding="utf-8") as f:
           json.dump(result, f, ensure_ascii=False)
     elif ds=='banking':
-        # result = execute(test_data, model_func=apply_bge, clustering_method='BIRCH', threshold=0.5, branching_factor=40)
-        result = execute(test_data, model_func=apply_frida, clustering_method='BIRCH', threshold=0.5, branching_factor=40)
-        # with open(f'result_bge+birch_{ds}.json', "w", encoding="utf-8") as f:
-        with open(f'result_frida+birch_{ds}.json', "w", encoding="utf-8") as f:
+        result = execute(test_data, model_func=apply_bge, clustering_method='BIRCH', threshold=0.5, branching_factor=40)
+        # result = execute(test_data, model_func=apply_frida, clustering_method='BIRCH', threshold=0.5, branching_factor=40)
+        with open(f'result_bge+birch_{ds}.json', "w", encoding="utf-8") as f:
+        # with open(f'result_frida+birch_{ds}.json', "w", encoding="utf-8") as f:
           json.dump(result, f, ensure_ascii=False)     
     print(result['metrics'])

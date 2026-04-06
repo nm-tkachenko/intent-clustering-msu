@@ -2,7 +2,7 @@ import json
 from functions.encoders import *
 
 '''
-This code applies all the encoders on  contains all the functions that apply encoders to data and return embeddings.
+This code applies all the encoders on train data and save the embeddings.
 '''
 
 with open('../translation/clinc_qwen2.json', 'r', encoding="utf-8") as f:
