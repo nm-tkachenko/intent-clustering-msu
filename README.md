@@ -43,7 +43,9 @@ Clustering quality was evaluated with 17 different metrics. Exact list as well a
 
 ## Intent extraction
 
-Intent for each discovered cluster (cluster name) was generated with the **RAKE** algorithm. Keyword phrases with the highest scores were attributed to the corresponding cluster elements. List of clusters and the corresponding intents (sorted by RAKE score from highest to lowest) can be found in the *Clustering* folder of the project.
+Intent for each discovered cluster (cluster name) was generated with the **RAKE** algorithm. We implemented the algorithm with following hyperparameters: `min_length=2, max_length=6`. Keyword phrases with the highest scores were attributed to the corresponding cluster elements. List of clusters and the corresponding intents (sorted by RAKE score from highest to lowest) can be found in the *Clustering* folder of the project.
+
+Additionally, we experimented with **TF-IDF** algorithm for this task. The vectorizer was initialized with following hyperparameters: `ngram_range=(2,3), min_df=0.15, stop_words=nltk.corpus.stopwords.words('russian')`. This pipeline is yet to be implemented for all datasets, but proved promising by human evaluation on a subset of the data. The code used for experiments can also be found in the *Clustering* folder of the project.
 
 TBA: improving the pipeline for this subtask, intent extraction quality evaluation.
 
