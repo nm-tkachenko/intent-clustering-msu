@@ -1,5 +1,5 @@
 '''
-This file translates CLINC150 from english into russian using OmniLing-V1-8b.
+This code translates CLINC150 from english into russian using OmniLing-V1-8b.
 '''
 import subprocess
 import sys
