@@ -13,6 +13,7 @@ Files presented in the main folder space:
 * `clustering_coarse.py`: code for performing rough evaluation on the train data and further pipeline selection.
 * `clustering_coarse_added.py`: auxiliary code for rough evaluation with additional iterated hyperparameters.
 * `clustering_fine.py`: code for performing hyperparameter finetuning and evaluation on train data using the most promising pipelines from the previous step.
+* `keywords.py`: code for extracting keywords from a cluster by using TF-IDF vectorizer. This pipeline for intent extraction is currently WIP and will be expanded later.
 
 Files presented in the *functions* subfolder contain the lists of all functions involved in certain steps of data processing:
 * `algorithms.py`: all the functions used for performing clustering algorithms on a list of embeddings.
