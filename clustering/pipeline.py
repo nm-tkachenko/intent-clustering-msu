@@ -13,6 +13,7 @@ This is also an example of using the entire repository.
 def execute(data, model_func=apply_bge, clustering_method='BIRCH', 
             threshold=0.5, branching_factor=30, eps=0.5, min_samples=1,
             tf_idf_params = {'ngram_range': (2, 3), 'min_df': 0.15}, rake_params = {'min_length': 2, 'max_length': 6}):
+    print(f'using {model_func.__name__.split('_')[1].upper()} and {clustering_method}')
     labels_true=[elem[2] for elem in data]
     labels_codes = {l: x for x, l in enumerate(set(labels_true))}
     labels_codes['oos'] = -1
@@ -39,11 +40,14 @@ def execute(data, model_func=apply_bge, clustering_method='BIRCH',
     else:
         print('unsupported clustering method')
     metrics_ = compute_metrics(pred_labels=pred_labels, gold_labels=gold_labels, dists=dists, data=data, gold_ARPF=gold_ARPF, gold_B2=gold_B2)
+    print(metrics_)
     return {'metrics': metrics_, 'clusters and keywords': keywords(pred_labels, data, tf_idf_params, rake_params), 'pred_labels': pred_labels.tolist()}
 
 for ds in ('clinc', 'banking'):
     # if ds=='clinc':
     #   continue
+
+    print(f'evaluating {ds}...')
   
     with open(f'../translation/{ds}_qwen2.json', 'r', encoding="utf-8") as f:
       data = json.load(f)
@@ -61,15 +65,25 @@ for ds in ('clinc', 'banking'):
        test_data.extend([(start+id, elem['translation'], elem['label']) for id, elem in enumerate(data[split])])
     
     if ds=='clinc':
+
+        # BGE + BIRCH
         result = execute(test_data, model_func=apply_bge, clustering_method='BIRCH', threshold=0.55, branching_factor=30)
-        # result = execute(test_data, model_func=apply_frida, clustering_method='DBSCAN', eps=0.5, min_samples=1)
         with open(f'result_bge+birch_{ds}.json', "w", encoding="utf-8") as f:
-      # with open(f'result_frida+dbscan_{ds}.json', "w", encoding="utf-8") as f:
           json.dump(result, f, ensure_ascii=False)
+
+        # FRIDA + DBSCAN
+        result = execute(test_data, model_func=apply_frida, clustering_method='DBSCAN', eps=0.5, min_samples=1)
+        with open(f'result_frida+dbscan_{ds}.json', "w", encoding="utf-8") as f:
+            json.dump(result, f, ensure_ascii=False)
+
     elif ds=='banking':
+
+        # BGE + BIRCH
         result = execute(test_data, model_func=apply_bge, clustering_method='BIRCH', threshold=0.5, branching_factor=40)
-        # result = execute(test_data, model_func=apply_frida, clustering_method='BIRCH', threshold=0.5, branching_factor=40)
         with open(f'result_bge+birch_{ds}.json', "w", encoding="utf-8") as f:
-        # with open(f'result_frida+birch_{ds}.json', "w", encoding="utf-8") as f:
-          json.dump(result, f, ensure_ascii=False)     
-    print(ds, '\n', result['metrics'])
+          json.dump(result, f, ensure_ascii=False)
+
+        # FRIDA + BIRCH
+        result = execute(test_data, model_func=apply_frida, clustering_method='BIRCH', threshold=0.5, branching_factor=40)
+        with open(f'result_frida+birch_{ds}.json', "w", encoding="utf-8") as f:
+          json.dump(result, f, ensure_ascii=False)
