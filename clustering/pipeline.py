@@ -6,7 +6,7 @@ from functions.encoders import *
 
 '''
 This file executes the best combination of clustering algorithm, its parameters and embeddings used on the test sets of both datasets,
-evaluates the results and saves the statistics (RAKE results included).
+evaluates the results and saves the statistics (TF-IDF and RAKE results included).
 This is also an example of using the entire repository.
 '''
 
