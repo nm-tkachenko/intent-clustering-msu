@@ -6,12 +6,14 @@ from functions.algorithms import *
 '''
 This code runs special combinations of clustering algorithms, their parameters and embeddings used on the training sets of both datasets,
 iterating finely over the parameters around the values that showed the best results previously, 
-evaluates the results and saves the statistics (RAKE results included without re-sorting). 
+evaluates the results and saves the statistics (TF-IDF and RAKE results included without re-sorting). 
 '''
 
 for ds in ('clinc', 'banking'):
-    if ds=='clinc':
-      continue
+    # if ds=='clinc':
+    #   continue
+
+    print(f'evaluating {ds}...')
   
     with open(f'../translation/{ds}_qwen2.json', 'r', encoding="utf-8") as f:
       data = json.load(f)
