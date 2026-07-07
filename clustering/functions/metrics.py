@@ -1,14 +1,19 @@
 '''
 This file contains all the functions used for evaluation.
 '''
-
+# import json
 from tqdm import tqdm
 from sklearn.metrics import precision_recall_fscore_support, accuracy_score
 from sklearn.metrics.pairwise import euclidean_distances
 from sklearn import metrics
+from sklearn.feature_extraction.text import TfidfVectorizer
 import nltk
 from rake_nltk import Rake
+from nltk.corpus import stopwords
+from nltk.tokenize import word_tokenize
 nltk.download('punkt_tab')
+nltk.download('stopwords')
+stop_words = list(set(stopwords.words('russian')))
 
 def APRF_pairwise(data, result, gold=None):
   if gold is None:
@@ -28,7 +33,7 @@ def APRF_pairwise(data, result, gold=None):
         pred.append(0)
   P, R, F1, s = precision_recall_fscore_support(gold, pred, average='macro')
   Acc = accuracy_score(gold, pred)
-  return {"Accuracy": Acc, "P": P, "R": R, "F1": F1}
+  return {"Pairwise_Accuracy": Acc, "Pairwise_P": P, "Pairwise_R": R, "Pairwise_F1": F1}
 
 def b_cubed(data, result, gold=None):
   N = len(data)
@@ -97,16 +102,27 @@ def compute_metrics(pred_labels, gold_labels, dists, data, gold_ARPF=None, gold_
   rezult = rezult | APRF_pairwise(data, pred_labels, gold=gold_ARPF) | b_cubed(data, pred_labels, gold=gold_B2) | mean_in_inter(pred_labels, dists)
   return rezult
 
-def keywords(labels, data):
+def tf_idf_keywords(data, ngram_range=(2,3), min_df=0.15):
+  vectorizer = TfidfVectorizer(ngram_range=ngram_range, stop_words=stop_words, min_df=min_df)
+  try:
+    vectorizer.fit_transform(data)
+    return list(vectorizer.get_feature_names_out())
+  except ValueError:
+    pass
+
+def keywords(labels, data, tf_idf_params = {'ngram_range': (2, 3), 'min_df': 0.15}, rake_params = {'min_length': 2, 'max_length': 6}):
     pred = {}
     for i, label in tqdm(enumerate(labels)):
         if label!=-1:
           pred[label] = pred.get(label, [])
           pred[label].append(data[i][1])
-    corpus = [{'support': len(pred[label]), 'text': '\n'.join(pred[label])} for label in pred]
-    r = Rake(min_length=2, max_length=6)
+    corpus = [{'support': len(pred[label]), 'text': '\n'.join(pred[label]),
+               'tf_idf_keywords': tf_idf_keywords(pred[label], **tf_idf_params)} for label in pred]
+
+    r = Rake(**rake_params)
     for text in corpus:
       r.extract_keywords_from_text(text["text"])
-      keywords = r.get_ranked_phrases()
-      text["rake_results"] = keywords
+      rake_keywords = r.get_ranked_phrases()
+      text["rake_keywords"] = rake_keywords
+    
     return sorted(corpus, key=lambda elem: -elem['support'])
